@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYD.exe | Personal Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--panel:#0b111b;--cyan:#00f5ff;--pink:#ff174f;--text:#e9f4fa;--muted:#8997a8}
+*{margin:0;padding:0;box-sizing:border-box;cursor:none}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow-x:hidden}
+a{color:inherit}
+.car-cursor{position:fixed;top:0;left:0;z-index:99999;pointer-events:none;transform:translate(-50%,-50%);font-size:30px;filter:drop-shadow(0 0 8px var(--cyan)) drop-shadow(0 0 15px var(--pink))}
+.car-ring{position:fixed;top:0;left:0;width:35px;height:35px;border:1px solid var(--cyan);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);box-shadow:0 0 15px #00f5ff55}
+body.hovering .car-cursor{filter:drop-shadow(0 0 15px var(--pink)) drop-shadow(0 0 25px var(--pink))}
+@media(hover:none){*,*::before,*::after{cursor:auto}.car-cursor,.car-ring{display:none}}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:10;opacity:.09;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E")}
+.scanlines{position:fixed;inset:0;pointer-events:none;z-index:9;background:repeating-linear-gradient(transparent 0px,transparent 3px,#00000018 4px)}
+.music-toggle{
+ position:fixed;right:24px;bottom:22px;z-index:1000;
+ border:1px solid var(--cyan);background:#07111de8;color:var(--cyan);
+ padding:12px 16px;font:10px 'Orbitron',sans-serif;letter-spacing:2px;
+ box-shadow:0 0 18px #00f5ff30;backdrop-filter:blur(10px);
+}
+.music-toggle:hover{background:var(--cyan);color:#03070c}
+.music-toggle.playing{border-color:var(--pink);color:var(--pink)}
+@media(max-width:480px){.music-toggle{right:12px;bottom:12px;padding:10px 12px}}
+nav{height:75px;position:fixed;top:0;left:0;width:100%;z-index:100;padding:0 8%;display:flex;align-items:center;justify-content:space-between;background:#05070ce8;border-bottom:1px solid #00f5ff25;backdrop-filter:blur(15px)}
+.logo{font-family:'Orbitron',sans-serif;font-size:19px;letter-spacing:3px;font-weight:700}.logo span{color:var(--cyan)}
+.nav-links{display:flex;gap:24px}.nav-links a{color:#a0acb8;text-decoration:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;transition:.3s}.nav-links a:hover{color:var(--cyan)}
+.menu{display:none;background:none;border:none;color:var(--cyan);font-size:25px}
+.hero{min-height:100vh;position:relative;display:flex;align-items:center;padding:130px 10% 90px;background:linear-gradient(90deg,#03060df2 5%,#03060d99 55%,#03060d55),url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=1800') center/cover}
+.hero:after{content:"";position:absolute;bottom:0;left:0;width:100%;height:180px;background:linear-gradient(transparent,var(--bg))}
+.hero-inner{width:100%;display:flex;justify-content:space-between;align-items:center;gap:50px;position:relative;z-index:2}
+.status{color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:4px;margin-bottom:25px}.status:before{content:"● ";color:#00ff9d;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(45px,8vw,100px);line-height:1.05;letter-spacing:-4px}.hero h1 span{color:var(--cyan);text-shadow:0 0 30px #00f5ff66}
+.hero-description{color:#a3b0bf;max-width:510px;line-height:1.9;font-size:14px;margin-top:25px}
+.hero-buttons{display:flex;gap:15px;flex-wrap:wrap;margin-top:35px}
+.btn{display:inline-block;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;padding:15px 22px;transition:.3s}
+.btn-primary{background:var(--cyan);color:#03070c}.btn-secondary{border:1px solid var(--pink);color:white}.btn:hover{transform:translateY(-4px);box-shadow:0 0 25px #00f5ff55}
+.profile{width:290px;height:370px;border:1px solid var(--cyan);padding:8px;background:#00f5ff12;box-shadow:0 0 30px #00f5ff20,15px 15px 0 #ff174f30;flex-shrink:0;position:relative}
+.profile img{width:100%;height:100%;object-fit:cover;object-position:center 25%;filter:contrast(1.08) brightness(.85)}
+.profile-label{position:absolute;bottom:-38px;left:0;color:var(--cyan);font-size:9px;letter-spacing:3px}
+section{position:relative}
+.section-heading{padding:100px 10% 40px}
+.section-label{color:var(--pink);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:5px;margin-bottom:20px}
+.section-heading h2{font-family:'Orbitron',sans-serif;font-size:clamp(30px,6vw,65px);letter-spacing:-2px}
+.section-heading p{color:var(--muted);margin-top:18px;line-height:1.8;max-width:600px;font-size:13px}
+.content-section{padding:75px 10%}
+.reveal{opacity:0;transform:translateY(35px);transition:opacity .8s ease,transform .8s ease}
+.reveal.show{opacity:1;transform:translateY(0)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel{background:linear-gradient(145deg,#101b29,#090e17);border:1px solid #00f5ff22;padding:30px;transition:.3s}
+.panel:hover{border-color:var(--cyan);box-shadow:0 0 25px #00f5ff12}
+.panel h3{font-family:'Orbitron',sans-serif;font-size:15px;margin-bottom:20px;color:var(--cyan)}
+.panel p{color:var(--muted);font-size:13px;line-height:2}
+.fact{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #ffffff12;font-size:12px}
+.fact span:first-child{color:var(--muted);flex-shrink:0}.fact span:last-child{color:var(--cyan);text-align:right}
+.world-section{min-height:590px;padding:90px 10%;display:flex;align-items:flex-end;background-position:center;background-size:cover;isolation:isolate;overflow:hidden}
+.world-section:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#03060cf5 0%,#03060c99 45%,#03060c35 100%);transition:.5s}
+.world-section:hover:before{background:linear-gradient(0deg,#03060cf5,#03060c55)}
+.world-content{max-width:650px}.world-number{color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:5px}
+.world-section h2{font-family:'Orbitron',sans-serif;font-size:clamp(45px,8vw,95px);letter-spacing:-4px;margin:20px 0;line-height:1}
+.world-section p{color:#c2cbd5;font-size:14px;line-height:2;max-width:510px}
+.world-tag{display:inline-block;border:1px solid var(--cyan);color:var(--cyan);padding:10px 16px;margin-top:28px;font-size:9px;letter-spacing:3px}
+.music{background-image:url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=1800')}.music h2{color:#ff174f;text-shadow:0 0 25px #ff174f88}
+.gaming{background-image:url('https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1800')}
+.movies{background-image:url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1800')}
+.poetry{background-image:url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1800')}
+.philosophy{background-image:url('https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=1800')}
+.politics{background-image:url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1800')}
+.psychology{background-image:url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1800')}
+.fashion{background-image:url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1800')}
+.food{background-image:url('https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=1800')}
+.sports{background-image:url('https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1800')}
+.mystery{background-image:url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1800')}
+.traits{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.trait{padding:25px;background:var(--panel);border:1px solid #ffffff12;min-height:130px;transition:.3s}
+.trait:hover{border-color:var(--pink);transform:translateY(-5px)}
+.trait h3{color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:12px;margin-bottom:12px}
+.trait p{color:var(--muted);font-size:12px;line-height:1.8}
+.love-section{padding:130px 10%;text-align:center;background:linear-gradient(#08050ad9,#08050af2),url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=1800') center/cover}
+.love-symbol{font-size:40px;color:var(--pink);text-shadow:0 0 25px var(--pink);margin-bottom:25px}
+.love-section h2{font-family:'Orbitron',sans-serif;font-size:clamp(35px,7vw,70px);color:white;margin-bottom:30px}
+.love-section p{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,30px);color:#d4c8d6;line-height:1.7;max-width:750px;margin:auto}
+.final{min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 10%;background:linear-gradient(#03060cbb,#03060cf5),url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=1800') center/cover}
+.final-content{max-width:1000px}.final-label{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:7px;color:var(--pink);margin-bottom:35px}
+.final h2{font-family:'Orbitron',sans-serif;font-size:clamp(30px,6.5vw,75px);line-height:1.4;text-shadow:0 0 30px #00f5ff22}.final h2 span{color:var(--cyan)}
+.final p{color:var(--muted);margin-top:35px;font-size:11px;letter-spacing:4px}
+footer{padding:30px 10%;border-top:1px solid #00f5ff22;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:#788493;font-size:10px;letter-spacing:2px}
+@media(max-width:850px){
+ nav{padding:0 6%}.nav-links{display:none;position:absolute;top:75px;left:0;width:100%;padding:30px;flex-direction:column;background:#05070c;border-bottom:1px solid var(--cyan)}.nav-links.open{display:flex}.menu{display:block}
+ .hero{padding:130px 7% 100px}.hero-inner{flex-direction:column-reverse;align-items:flex-start}.profile{width:210px;height:260px}.hero h1{letter-spacing:-2px}
+ .section-heading,.content-section{padding-left:7%;padding-right:7%}.world-section{padding:75px 7%;min-height:500px}.about-grid{grid-template-columns:1fr}.traits{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){.traits{grid-template-columns:1fr}.world-section h2{letter-spacing:-2px}footer{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.ephemeral-banner{padding:clamp(54px,10vw,130px) 7vw;text-align:center;background:linear-gradient(120deg,rgba(0,245,255,.08),rgba(255,23,79,.12),rgba(0,0,0,.2));border-top:1px solid rgba(0,245,255,.25);border-bottom:1px solid rgba(255,23,79,.25);font-family:Orbitron, sans-serif;font-size:clamp(2rem,7.2vw,6.8rem);font-weight:800;line-height:1.12;letter-spacing:-.055em;text-shadow:0 0 24px rgba(0,245,255,.28)}
+.ephemeral-banner span{display:block}
+.ephemeral-banner .ephemeral-accent{color:var(--pink);text-shadow:0 0 28px rgba(255,23,79,.45)}
+.anime{background:linear-gradient(115deg,rgba(6,10,22,.94),rgba(35,8,34,.82)),radial-gradient(circle at 80% 25%,rgba(255,23,79,.2),transparent 42%)}
+
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+<div class="car-cursor">🏎️</div><div class="car-ring"></div>
+<button class="music-toggle" id="musicToggle" type="button" aria-label="Play background music">
+  ♫ <span id="musicLabel">MUSIC OFF</span>
+</button>
+<audio id="bgMusic" loop preload="none">
+  <!-- Upload your music file as "music.mp3" beside this index.html in your GitHub repository. -->
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<nav>
+  <div class="logo">SYD<span>.EXE</span></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#home">Home</a><a href="#about">About</a><a href="#music">Music</a>
+    <a href="#interests">Interests</a><a href="#personality">Personality</a><a href="#love">Love</a>
+  </div>
+  <button class="menu" id="menuBtn" aria-label="Toggle menu">☰</button>
+</nav>
+
+<header class="hero" id="home">
+ <div class="hero-inner">
+  <div class="hero-content reveal">
+   <div class="status">SYSTEM ONLINE / USER: SYD</div>
+   <h1>NOT YOUR<br><span>AVERAGE</span><br>HUMAN.</h1>
+   <p class="hero-description">Music addicted. Overthinker. Introvert. A little bit of everything, yet somehow a mystery even to myself. Welcome to my world.</p>
+   <div class="hero-buttons">
+    <a href="#about" class="btn btn-primary">EXPLORE PROFILE ↗</a>
+    <a href="#interests" class="btn btn-secondary">MY INTERESTS</a>
+   </div>
+  </div>
+  <div class="profile reveal">
+   <img src="pfp.png" alt="Profile picture">
+   <div class="profile-label">USER PROFILE / SYD-001</div>
+  </div>
+ </div>
+</header>
+
+<div class="section-heading" id="about">
+ <div class="section-label">01 / PERSONAL DATABASE</div>
+ <h2>WHO IS SYD?</h2>
+ <p>A little information about the person behind this digital identity.</p>
+</div>
+
+<section class="content-section">
+ <div class="about-grid">
+  <div class="panel reveal">
+   <h3>THE UNKNOWN PERSON</h3>
+   <p>I'm Syd. An introvert, a little shy, and someone who enjoys spending time alone. A curious mind with interests ranging from music and philosophy to movies, fashion and sports. I'm not really someone who can be understood from a first impression.</p>
+  </div>
+  <div class="panel reveal">
+   <h3>PERSONAL INFORMATION</h3>
+   <div class="fact"><span>Name</span><span>SYD</span></div>
+   <div class="fact"><span>Birthdate</span><span>Wish me on 17th November 🎂</span></div>
+   <div class="fact"><span>Height</span><span>Enough to grab a coconut with bare hands 🥥</span></div>
+   <div class="fact"><span>Personality</span><span>Introvert &amp; Shy</span></div>
+   <div class="fact"><span>Attitude</span><span>Chalant</span></div>
+   <div class="fact"><span>Memory</span><span>Short-term memory issues</span></div>
+   <div class="fact"><span>Relationship</span><span>Already Taken ♥</span></div>
+   <div class="fact"><span>Skillset</span><span>Jack of all trades</span></div>
+  </div>
+ </div>
+</section>
+
+<section class="world-section music reveal" id="music"><div class="world-content">
+ <div class="world-number">02 / SOUNDTRACK OF MY LIFE</div><h2>MUSIC<br>ADDICT.</h2>
+ <p>Sometimes music says everything I can't put into words. Late nights, headphones, endless playlists and getting lost in a different world. Starboy energy. Dark atmosphere. A soundtrack for my own little universe.</p>
+ <div class="world-tag">STARBOY MODE / ACTIVATED</div>
+</div></section>
+
+
+<div class="ephemeral-banner reveal" aria-label="Sometime Ephemeral sometimes clingy">
+  <span>SOMETIME EPHEMERAL</span>
+  <span class="ephemeral-accent">SOMETIMES CLINGY.</span>
+</div>
+
+<div class="section-heading" id="interests"><div class="section-label">03 / INTEREST DATABASE</div><h2>THINGS THAT<br>KEEP ME GOING.</h2><p>Different interests, different worlds. Each one represents another side of me.</p></div>
+
+<section class="world-section gaming reveal"><div class="world-content"><div class="world-number">03.01 / DIGITAL WORLDS</div><h2>VIDEO<br>GAMES.</h2><p>Sometimes reality gets boring, so I explore different realities instead. From immersive storylines to open worlds, gaming is one of my favourite escapes.</p><div class="world-tag">PLAYER ONE / ALWAYS</div></div></section>
+
+
+<section class="world-section anime reveal"><div class="world-content"><div class="world-number">03.02 / ANIMATION &amp; STORYWORLDS</div><h2>ANIME.</h2><p>Anime, unforgettable characters, layered stories, beautiful worlds and emotions that hit different. Another universe I love getting lost in.</p><div class="world-tag">ANOTHER WORLD / ANOTHER STORY</div></div></section>
+
+<section class="world-section movies reveal"><div class="world-content"><div class="world-number">03.03 / CINEMA</div><h2>MOVIES.</h2><p>Stories, characters, unexpected endings and cinematic experiences. I love getting immersed in fictional worlds and discovering films that stay in my mind.</p><div class="world-tag">EVERY FRAME TELLS A STORY</div></div></section>
+
+<section class="world-section poetry reveal"><div class="world-content"><div class="world-number">03.04 / WORDS &amp; EMOTIONS</div><h2>POETRY.</h2><p>There are feelings that ordinary conversations cannot explain. Poetry gives those feelings somewhere to exist. A little darkness, a little beauty, and a lot left unsaid.</p><div class="world-tag">WORDS LEFT UNSPOKEN</div></div></section>
+
+<section class="world-section philosophy reveal"><div class="world-content"><div class="world-number">03.05 / EXISTENCE</div><h2>PHILOSOPHY.</h2><p>Questioning reality, existence, morality and the meaning of life. Inspired by Nietzsche, Socrates, Plato and Albert Camus.</p><div class="world-tag">QUESTION EVERYTHING</div></div></section>
+
+<section class="world-section politics reveal"><div class="world-content"><div class="world-number">03.06 / POWER &amp; HISTORY</div><h2>POLITICS.</h2><p>Political ideologies, historical events, leadership and the systems that shape the world around us. Understanding different perspectives is always interesting.</p><div class="world-tag">POWER / HISTORY / IDEOLOGY</div></div></section>
+
+<section class="world-section mystery reveal"><div class="world-content"><div class="world-number">03.07 / THE UNKNOWN</div><h2>MYSTERIES.</h2><p>Secret societies, Illuminati history, mysterious symbolism and conspiracy theories. I enjoy exploring the unknown while separating historical evidence from speculation.</p><div class="world-tag">NOT EVERYTHING IS WHAT IT SEEMS</div></div></section>
+
+<section class="world-section psychology reveal"><div class="world-content"><div class="world-number">03.07 / HUMAN MIND</div><h2>PSYCHOLOGY.</h2><p>Human behaviour, emotions, personality, cognitive biases and the complexity of the human mind. The more you understand people, the more interesting humanity becomes.</p><div class="world-tag">UNDERSTAND THE MIND</div></div></section>
+
+<div class="section-heading"><div class="section-label">04 / PERSONAL LIFESTYLE</div><h2>MY OTHER SIDE.</h2></div>
+<section class="world-section fashion reveal"><div class="world-content"><div class="world-number">04.01 / PERSONAL STYLE</div><h2>FASHION.</h2><p>Clothes are a form of self-expression. I love style, streetwear and the creativity behind putting different looks together.</p><div class="world-tag">DRESS LIKE YOURSELF</div></div></section>
+
+<section class="world-section food reveal"><div class="world-content"><div class="world-number">04.02 / FOOD CULTURE</div><h2>SHAWARMA.</h2><p>I LOVE EATING. Good food is an experience, and shawarma is definitely one of my favourites. Eating a lot and somehow not noticing much change in my weight.</p><div class="world-tag">FOOD IS ALWAYS A GOOD IDEA</div></div></section>
+
+<section class="world-section sports reveal"><div class="world-content"><div class="world-number">04.03 / SPORTS CULTURE</div><h2>SPORTS.</h2><p>Basketball, boxing and UFC. Different sports, different kinds of competition, but all entertaining in their own way.</p><div class="world-tag">GAME / FIGHT / REPEAT</div></div></section>
+
+<div class="section-heading" id="personality"><div class="section-label">05 / PERSONALITY FILES</div><h2>THE CONTRADICTIONS.</h2><p>Some things about me that might explain why I'm not the easiest person to figure out.</p></div>
+
+<section class="content-section"><div class="traits">
+ <div class="trait reveal"><h3>INTROVERT</h3><p>Most of the time, I'd rather enjoy my own company.</p></div>
+ <div class="trait reveal"><h3>SHY</h3><p>Not always comfortable being the centre of attention.</p></div>
+ <div class="trait reveal"><h3>CHALANT</h3><p>Keeping my composure and not making everything a big deal.</p></div>
+ <div class="trait reveal"><h3>JACK OF ALL TRADES</h3><p>Interested in many things, always learning something new, master of none.</p></div>
+ <div class="trait reveal"><h3>SHORT-TERM MEMORY</h3><p>Sometimes I forget little things, even when I genuinely care.</p></div>
+ <div class="trait reveal"><h3>PERSONAL STRUGGLES</h3><p>Navigating personal and emotional challenges while still figuring myself out.</p></div>
+ <div class="trait reveal"><h3>SOLITUDE</h3><p>I spend a lot of time alone. Sometimes it's peaceful, sometimes it feels lonely.</p></div>
+ <div class="trait reveal"><h3>CURIOUS MIND</h3><p>One question often leads to another hundred questions.</p></div>
+ <div class="trait reveal"><h3>UNPREDICTABLE</h3><p>There are always different sides of me to discover.</p></div>
+</div></section>
+
+<section class="love-section reveal" id="love">
+ <div class="love-symbol">♥</div><div class="section-label">06 / LOVE LIFE</div><h2>ALREADY TAKEN.</h2>
+ <p>In a world full of temporary things, I have someone who means everything to me. The person I love holds a special place in my life, and that's something I wouldn't trade for anything.</p>
+ <div class="world-tag">ONE PERSON / ONE SPECIAL PLACE</div>
+</section>
+
+<section class="final"><div class="final-content reveal">
+ <div class="final-label">SYSTEM MESSAGE / END OF FILE</div>
+ <h2>TO KNOW ME IS TO KNOW THAT <span>YOU'LL NEVER GET TO KNOW THE REAL ME.</span></h2>
+ <p>SYD.EXE — IDENTITY REMAINS UNDISCLOSED.</p>
+</div></section>
+
+<footer><div>SYD.EXE © 2026</div><div>BUILT DIFFERENT. UNDERSTOOD BY FEW.</div></footer>
+
+<script>
+const audio=document.getElementById('bgMusic');
+const musicToggle=document.getElementById('musicToggle');
+const musicLabel=document.getElementById('musicLabel');
+
+function updateMusicButton(){
+ const playing=!audio.paused;
+ musicLabel.textContent=playing?'MUSIC ON':'MUSIC OFF';
+ musicToggle.classList.toggle('playing',playing);
+ musicToggle.setAttribute('aria-label',playing?'Pause background music':'Play background music');
+}
+musicToggle.addEventListener('click',async()=>{
+ if(audio.paused){
+  try{await audio.play();}catch(error){musicLabel.textContent='TAP TO PLAY';}
+ }else{
+  audio.pause();
+ }
+ updateMusicButton();
+});
+audio.addEventListener('play',updateMusicButton);
+audio.addEventListener('pause',updateMusicButton);
+document.addEventListener('pointerdown', async function startMusicOnFirstInteraction(){
+ if(audio.paused){
+  try{await audio.play();}catch(error){}
+ }
+ updateMusicButton();
+ document.removeEventListener('pointerdown', startMusicOnFirstInteraction);
+}, {once:true});
+// Browsers may block autoplay with sound; the floating button always lets visitors start it.
+audio.play().then(updateMusicButton).catch(updateMusicButton);
+
+const car=document.querySelector('.car-cursor'),ring=document.querySelector('.car-ring');
+let mx=-100,my=-100,rx=-100,ry=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;car.style.left=mx+'px';car.style.top=my+'px'});
+function moveRing(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(moveRing)}
+moveRing();
+document.querySelectorAll('a,button,.panel,.trait').forEach(el=>{
+ el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+ el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+});
+const menuBtn=document.getElementById('menuBtn'),nav=document.getElementById('navLinks');
+menuBtn.addEventListener('click',()=>nav.classList.toggle('open'));
+nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.classList.remove('open')));
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('show');observer.unobserve(entry.target)}});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
